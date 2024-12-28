@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Visualization</title>
+    <style>
+        body {
+            display: flex;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        #graph-container {
+            flex: 3;
+            height: 100vh;
+            background-color: #f0f0f0;
+            position: relative;
+        }
+        #control-panel {
+            flex: 1;
+            background-color: #fff;
+            border-left: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .control-group {
+            margin-bottom: 20px;
+        }
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .control-group input,
+        .control-group button {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Graf Görselleştirme Alanı -->
+    <div id="graph-container">
+        <canvas id="graph-canvas"></canvas>
+    </div>
+
+    <!-- Kontrol Paneli -->
+    <div id="control-panel">
+        <h2>Control Panel</h2>
+
+        <!-- Yazarlar Arası En Kısa Yol -->
+        <div class="control-group">
+            <label for="start-author">Start Author ID:</label>
+            <input type="number" id="start-author" placeholder="Enter Start Author ID">
+        </div>
+        <div class="control-group">
+            <label for="end-author">End Author ID:</label>
+            <input type="number" id="end-author" placeholder="Enter End Author ID">
+        </div>
+        <button id="shortest-path-btn">Find Shortest Path</button>
+
+        <!-- Komşuları Göster -->
+		<div class="control-group">
+			<label for="author-id">Author ID:</label>
+			<input type="number" id="author-id" placeholder="Enter Author ID">
+		</div>
+		<button id="show-sorted-collaborators-btn">Show Sorted Collaborators</button>
+		<div id="queue-container" style="margin-top: 20px;"></div>
+		
+        <div class="control-group">
+            <label for="author-id">Author ID:</label>
+            <input type="number" id="author-id" placeholder="Enter Author ID">
+        </div>
+        <button id="show-neighbors-btn">Show Neighbors</button>
+    </div>
+
+    <script src="scripts/graph.js"></script>
+    <script src="scripts/api.js"></script>
+</body>
+</html>
