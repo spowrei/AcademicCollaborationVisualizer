@@ -5,23 +5,30 @@ const ctx = canvas.getContext("2d");
 canvas.width = canvas.offsetWidth;
 canvas.height = canvas.offsetHeight;
 
-// Grafik verisi
-const graphData = {
-    nodes: [
-        { id: 1, x: 100, y: 100, label: "Author 1" },
-        { id: 2, x: 300, y: 200, label: "Author 2" },
-        { id: 3, x: 200, y: 400, label: "Author 3" },
-    ],
-    edges: [
-        { from: 1, to: 2 },
-        { from: 2, to: 3 },
-    ],
+// Grafik verisi (Başlangıçta boş)
+let graphData = {
+    nodes: [],
+    edges: []
 };
 
 // Zoom özellikleri
 let scale = 1;
 let translateX = 0;
 let translateY = 0;
+
+// Backend'den graf verilerini çek ve grafiği çiz
+async function loadGraphData() {
+    try {
+        const response = await fetch("http://127.0.0.1:5000/api/graph");
+        if (!response.ok) {
+            throw new Error("Graf verileri yüklenemedi.");
+        }
+        graphData = await response.json();
+        drawGraph();
+    } catch (error) {
+        console.error(error);
+    }
+}
 
 // Düğümler ve kenarları çiz
 function drawGraph() {
@@ -90,9 +97,19 @@ canvas.addEventListener("wheel", (event) => {
     drawGraph();
 });
 
-// İlk çizim
-drawGraph();
+// "Show Sorted Collaborators" butonu için olay dinleyici
+document.getElementById("show-sorted-collaborators-btn").addEventListener("click", () => {
+    const authorId = parseInt(document.getElementById("author-id").value, 10);
 
+    if (isNaN(authorId)) {
+        alert("Please enter a valid author ID.");
+        return;
+    }
+
+    sortCollaboratorsByWeight(authorId);
+});
+
+// Kuyruk sıralama fonksiyonu
 function sortCollaboratorsByWeight(authorId) {
     const neighbors = graphData.edges
         .filter(edge => edge.from === authorId || edge.to === authorId)
@@ -113,14 +130,5 @@ function sortCollaboratorsByWeight(authorId) {
     });
 }
 
-// "Show Sorted Collaborators" butonu için olay dinleyici
-document.getElementById("show-sorted-collaborators-btn").addEventListener("click", () => {
-    const authorId = parseInt(document.getElementById("author-id").value, 10);
-
-    if (isNaN(authorId)) {
-        alert("Please enter a valid author ID.");
-        return;
-    }
-
-    sortCollaboratorsByWeight(authorId);
-});
+// Graf verilerini yükle ve çiz
+loadGraphData();

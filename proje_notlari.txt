@@ -1,1 +1,17 @@
-en son graph.py eklendi
+updateGraphWithNeighbors fonksiyonu
+Positioning Nodes (Düğüm Yerleşimi): Şu an, komşu düğümlerin yerleri Math.random() ile rastgele belirleniyor. 
+Bu, başlangıçta iyi çalışabilir, ancak düğüm sayısı arttıkça daha karışık hale gelebilir. 
+Düğümleri düzgün bir şekilde yerleştirmek için Force-Directed Layout gibi bir algoritma kullanabilirsiniz. 
+Bu tür algoritmalar, düğümleri yerleştirirken doğal bir düzen sağlar.
+
+
+
+4. Ağırlıklı Kenarları Görselleştirme
+highlightShortestPath fonksiyonu, sadece kenarları işaretliyor ancak kenarların ağırlıklarını da görselleştirmek 
+faydalı olabilir. Bu, kullanıcıların yolların maliyetlerini daha iyi anlamasına yardımcı olur.
+Öneri:
+Kenarların ağırlıklarını, kenarların üzerlerinde yazılı olarak gösterebilirsiniz. ctx.fillText() ile kenarın 
+ağırlığını kenarın tam ortasına veya biraz daha üstüne yazabilirsiniz.
+
+
+	
