@@ -1,18 +1,29 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS  # CORS'ı import edin
 from graph import Graph, dijkstra
+from data_processing import read_excel_and_parse
 
 # Flask uygulamasını başlat
 app = Flask(__name__)
 
+# CORS'ı etkinleştir
+CORS(app)  # Bu satır, CORS başlıklarını otomatik olarak ekler
+
 # Global graf nesnesi
 graph = Graph()
 
-# Örnek veri: Grafı manuel olarak doldur
-graph.add_node(1)
-graph.add_node(2)
-graph.add_node(3)
-graph.add_edge(1, 2, weight=3)
-graph.add_edge(2, 3, weight=5)
+# Excel'den verileri yükle
+file_path = '..\\dataset.xlsx'  # Excel dosyasının doğru yolu
+author_id_map, articles = read_excel_and_parse(file_path)
+
+# Grafı oluştur
+for article in articles:
+    for i, author1 in enumerate(article['authors']):
+        for author2 in article['authors'][i+1:]:
+            graph.add_node(author1)
+            graph.add_node(author2)
+            graph.add_edge(author1, author2, weight=1)
+
 
 @app.route('/')
 def home():
@@ -33,6 +44,7 @@ def get_neighbors(author_id):
     response = {"author_id": author_id, "neighbors": neighbors}
     return jsonify(response), 200
 
+
 @app.route('/api/shortest-path', methods=['GET'])
 def shortest_path():
     """
@@ -50,6 +62,23 @@ def shortest_path():
         return jsonify({"error": "No path found"}), 404
 
     return jsonify({"path": path, "total_weight": total_weight}), 200
+
+
+@app.route('/api/graph', methods=['GET'])
+def get_graph():
+    """
+    Tüm graf verilerini döndürür.
+    """
+    nodes = [
+        {"id": node_id, "label": f"Author {node_id}", "x": index * 100 + 50, "y": index * 100 + 50}
+        for index, node_id in enumerate(graph.get_nodes())
+    ]
+    edges = [
+        {"from": edge[0], "to": edge[1], "weight": edge[2]}
+        for edge in graph.get_edges()
+    ]
+    return jsonify({"nodes": nodes, "edges": edges}), 200
+
 
 if __name__ == '__main__':
     # Flask uygulamasını başlat

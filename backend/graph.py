@@ -53,15 +53,22 @@ class Graph:
         """İki düğüm arasındaki kenar ağırlığını döndür."""
         return self.edge_weights.get((node1, node2), None)
 
+    def get_nodes(self):
+        """Tüm düğümleri döndür."""
+        return list(self.adjacency_list.keys())
+
+    def get_edges(self):
+        """Tüm kenarları döndür."""
+        edges = []
+        for (node1, node2), weight in self.edge_weights.items():
+            if (node2, node1, weight) not in edges:  # Çift yönlü kenarları tekrarlama
+                edges.append((node1, node2, weight))
+        return edges
+
     def display(self):
         """Grafı adjacency list formatında yazdır."""
         for node, neighbors in self.adjacency_list.items():
             print(f"{node} -> {neighbors}")
-
-
-
-
-
 
 
 import heapq

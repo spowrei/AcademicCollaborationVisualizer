@@ -15,9 +15,9 @@ def read_excel_and_parse(file_path):
     articles = []
     
     for _, row in data.iterrows():
-        title = row['Makale Adı']
-        doi = row['DOI']
-        co_authors = row['Yazarlar'].split(",")  # Yazarları virgülle ayır
+        title = row['paper_title']  # Güncellenen sütun adı
+        doi = row['doi']            # Güncellenen sütun adı
+        co_authors = row['coauthors'].split(",")  # Güncellenen sütun adı
         
         article_authors = []
         for author in co_authors:
@@ -41,7 +41,7 @@ def read_excel_and_parse(file_path):
     return author_id_map, articles
 
 # Test için
-file_path = '..\dataset.xlsx'  # Excel dosyanızın yolu
+file_path = '..\\dataset.xlsx'  # Excel dosyanızın yolu
 author_id_map, articles = read_excel_and_parse(file_path)
 
 # Sonuçları kontrol et
