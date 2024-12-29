@@ -17,14 +17,21 @@ graph = Graph()
 file_path = '..\\dataset.xlsx'  # Excel dosyasının doğru yolu
 author_id_map, articles = read_excel_and_parse(file_path)
 
+# Yazarların makale sayılarını tutan sözlük
+article_count_map = {}
+
 # Grafı oluştur
 for article in articles:
     for i, author1 in enumerate(article['authors']):
+        # Yazarın makale sayısını artır
+        if author1 not in article_count_map:
+            article_count_map[author1] = 0
+        article_count_map[author1] += 1
+
         for author2 in article['authors'][i+1:]:
             graph.add_node(author1)
             graph.add_node(author2)
             graph.add_edge(author1, author2, weight=1)
-
 
 @app.route('/')
 def home():
@@ -45,7 +52,6 @@ def get_neighbors(author_id):
     response = {"author_id": author_id, "neighbors": neighbors}
     return jsonify(response), 200
 
-
 @app.route('/api/shortest-path', methods=['GET'])
 def shortest_path():
     """
@@ -64,30 +70,28 @@ def shortest_path():
 
     return jsonify({"path": path, "total_weight": total_weight}), 200
 
-
 @app.route('/api/graph', methods=['GET'])
 def get_graph():
     """
     Tüm graf verilerini döndürür.
     """
     nodes = [
-    {
-        "id": node_id,
-        "label": next((name for name, id in author_id_map.items() if id == node_id), f"Author {node_id}"),
-        "x": random.randint(50, 5000),  # Rastgele X pozisyonu (örnek aralık)
-        "y": random.randint(50, 5000)   # Rastgele Y pozisyonu (örnek aralık)
-    }
-    for node_id in graph.get_nodes()
-]
+        {
+            "id": node_id,
+            "label": next((name for name, id in author_id_map.items() if id == node_id), f"Author {node_id}"),
+            "x": random.randint(50, 5000),  # Rastgele X pozisyonu (örnek aralık)
+            "y": random.randint(50, 5000),  # Rastgele Y pozisyonu (örnek aralık)
+            "articleCount": article_count_map.get(node_id, 0)  # articleCount değerini ekle
+        }
+        for node_id in graph.get_nodes()
+    ]
 
     edges = [
-	    {"from": edge[0], "to": edge[1], "weight": edge[2]}
-	    for edge in graph.get_edges()
-	]
+        {"from": edge[0], "to": edge[1], "weight": edge[2]}
+        for edge in graph.get_edges()
+    ]
 
     return jsonify({"nodes": nodes, "edges": edges}), 200
-
-
 
 if __name__ == '__main__':
     # Flask uygulamasını başlat

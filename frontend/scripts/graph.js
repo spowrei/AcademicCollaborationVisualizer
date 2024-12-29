@@ -28,25 +28,38 @@ async function loadGraphData() {
         }
         graphData = await response.json();
 
-        // Düğüm boyutlarını ve renklerini hesapla
-        const articleCounts = graphData.nodes.map(node => node.articleCount);
-        const averageCount = articleCounts.reduce((a, b) => a + b, 0) / articleCounts.length;
-        const threshold = averageCount * 1.2;
-
-        graphData.nodes.forEach(node => {
-            if (node.articleCount >= threshold) {
-                node.size = 30; // Büyük düğüm boyutu
-                node.color = "#2c3e50"; // Koyu renk
-            } else {
-                node.size = 15; // Küçük düğüm boyutu
-                node.color = "#95a5a6"; // Açık renk
-            }
-        });
-
+        setNodeStyles();
         drawGraph();
     } catch (error) {
-        console.error(error);
+        console.error("Hata:", error);
     }
+}
+
+// Düğüm boyutlarını ve renklerini hesapla
+function setNodeStyles() {
+    const articleCounts = graphData.nodes.map(node => node.articleCount);
+    if (articleCounts.length === 0) {
+        console.warn("Makale sayıları boş.");
+        return;
+    }
+
+    const averageCount = articleCounts.reduce((a, b) => a + b, 0) / articleCounts.length;
+
+    graphData.nodes.forEach(node => {
+        if (node.articleCount >= averageCount * 1.2) {
+            node.size = 45; // Büyük düğüm boyutu
+            node.color = "#2c3e50"; // Koyu renk
+        } 
+		else if (node.articleCount >= averageCount * 0.8)
+		{
+			node.size = 30;
+			node.color ="#8fc8c3"
+		}
+		else {
+            node.size = 15; // Küçük düğüm boyutu
+            node.color = "#95a5a6"; // Açık renk
+        }
+    });
 }
 
 // Düğümler ve kenarları çiz
@@ -144,39 +157,6 @@ canvas.addEventListener("mouseup", () => {
 canvas.addEventListener("mouseleave", () => {
     isDragging = false;
 });
-
-// "Show Sorted Collaborators" butonu için olay dinleyici
-document.getElementById("show-sorted-collaborators-btn").addEventListener("click", () => {
-    const authorId = parseInt(document.getElementById("author-id").value, 10);
-
-    if (isNaN(authorId)) {
-        alert("Please enter a valid author ID.");
-        return;
-    }
-
-    sortCollaboratorsByWeight(authorId);
-});
-
-// Kuyruk sıralama fonksiyonu
-function sortCollaboratorsByWeight(authorId) {
-    const neighbors = graphData.edges
-        .filter(edge => edge.from === authorId || edge.to === authorId)
-        .map(edge => {
-            const neighborId = edge.from === authorId ? edge.to : edge.from;
-            const weight = edge.weight || 1; // Ağırlık varsayılan olarak 1
-            return { id: neighborId, weight };
-        })
-        .sort((a, b) => b.weight - a.weight); // Ağırlığa göre sıralama
-
-    // Kuyruğu canlı olarak göster
-    const queueContainer = document.getElementById("queue-container");
-    queueContainer.innerHTML = ""; // Mevcut içeriği temizle
-    neighbors.forEach(neighbor => {
-        const div = document.createElement("div");
-        div.textContent = `Author ${neighbor.id}: Weight ${neighbor.weight}`;
-        queueContainer.appendChild(div);
-    });
-}
 
 // Graf verilerini yükle ve çiz
 loadGraphData();

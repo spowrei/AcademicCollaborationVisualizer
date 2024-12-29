@@ -40,3 +40,4 @@ proje/
 
 
 file:///C:/Users/Dell/Desktop/Prolab-3/frontend/index.html
+python -m http.server 8000
