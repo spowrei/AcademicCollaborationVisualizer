@@ -24,6 +24,22 @@ async function loadGraphData() {
             throw new Error("Graf verileri yüklenemedi.");
         }
         graphData = await response.json();
+
+        // Düğüm boyutlarını ve renklerini hesapla
+        const articleCounts = graphData.nodes.map(node => node.articleCount);
+        const averageCount = articleCounts.reduce((a, b) => a + b, 0) / articleCounts.length;
+        const threshold = averageCount * 1.2;
+
+        graphData.nodes.forEach(node => {
+            if (node.articleCount >= threshold) {
+                node.size = 30; // Büyük düğüm boyutu
+                node.color = "#2c3e50"; // Koyu renk
+            } else {
+                node.size = 15; // Küçük düğüm boyutu
+                node.color = "#95a5a6"; // Açık renk
+            }
+        });
+
         drawGraph();
     } catch (error) {
         console.error(error);
@@ -56,8 +72,8 @@ function drawGraph() {
     // Düğümleri çiz
     graphData.nodes.forEach(node => {
         ctx.beginPath();
-        ctx.arc(node.x, node.y, 20, 0, 2 * Math.PI);
-        ctx.fillStyle = "#3498db";
+        ctx.arc(node.x, node.y, node.size, 0, 2 * Math.PI);
+        ctx.fillStyle = node.color;
         ctx.fill();
         ctx.strokeStyle = "#000";
         ctx.lineWidth = 2;
@@ -79,7 +95,7 @@ canvas.addEventListener("click", (event) => {
 
     graphData.nodes.forEach(node => {
         const distance = Math.sqrt((x - node.x) ** 2 + (y - node.y) ** 2);
-        if (distance < 20) {
+        if (distance < node.size) {
             alert(`Clicked on ${node.label}`);
         }
     });

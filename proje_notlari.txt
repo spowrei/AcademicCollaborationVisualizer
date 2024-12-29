@@ -14,4 +14,29 @@ Kenarların ağırlıklarını, kenarların üzerlerinde yazılı olarak göster
 ağırlığını kenarın tam ortasına veya biraz daha üstüne yazabilirsiniz.
 
 
-	
+
+
+proje/
+│
+├── backend/                # Python ile backend kodları
+│   ├── app.py              # Flask API'si
+│   ├── graph.py            # Graf yapısı ve algoritmalar
+│   ├── data_processing.py  # Veri seti okuma ve işleme
+│   ├── requirements.txt    # Python bağımlılıkları
+│
+├── frontend/               # HTML ve JavaScript ile frontend kodları
+│   ├── index.html          # Ana sayfa
+│   ├── scripts/            
+│   │   ├── graph.js        # Graf görselleştirmesi için JavaScript
+│   │   ├── api.js          # API çağrıları için JavaScript
+│
+├── static/                 # Statik dosyalar
+│   ├── css/
+│   │   └── style.css       # (Opsiyonel: CSS dosyaları buraya eklenebilir)
+│   ├── images/             # Grafikte kullanılacak görseller (varsa)
+│
+└── README.md               # Proje açıklamaları
+
+
+
+file:///C:/Users/Dell/Desktop/Prolab-3/frontend/index.html
