@@ -70,9 +70,11 @@ def get_graph():
     Tüm graf verilerini döndürür.
     """
     nodes = [
-        {"id": node_id, "label": f"Author {node_id}", "x": index * 100 + 50, "y": index * 100 + 50}
-        for index, node_id in enumerate(graph.get_nodes())
-    ]
+    {"id": node_id, "label": next((name for name, id in author_id_map.items() if id == node_id), f"Author {node_id}"), 
+     "x": index * 100 + 50, 
+     "y": index * 100 + 50}
+    for index, node_id in enumerate(graph.get_nodes())
+]
     edges = [
         {"from": edge[0], "to": edge[1], "weight": edge[2]}
         for edge in graph.get_edges()

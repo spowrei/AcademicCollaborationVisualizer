@@ -11,10 +11,13 @@ let graphData = {
     edges: []
 };
 
-// Zoom özellikleri
+// Zoom ve pan (kaydırma) özellikleri
 let scale = 1;
 let translateX = 0;
 let translateY = 0;
+let isDragging = false;
+let startX = 0;
+let startY = 0;
 
 // Backend'den graf verilerini çek ve grafiği çiz
 async function loadGraphData() {
@@ -111,6 +114,35 @@ canvas.addEventListener("wheel", (event) => {
         scale *= 1 - zoomFactor; // Zoom out
     }
     drawGraph();
+});
+
+// Fare sürükleme (pan) olayları
+canvas.addEventListener("mousedown", (event) => {
+    isDragging = true;
+    const rect = canvas.getBoundingClientRect();
+    startX = event.clientX - rect.left - translateX;
+    startY = event.clientY - rect.top - translateY;
+});
+
+canvas.addEventListener("mousemove", (event) => {
+    if (isDragging) {
+        const rect = canvas.getBoundingClientRect();
+        const currentX = event.clientX - rect.left;
+        const currentY = event.clientY - rect.top;
+
+        translateX = currentX - startX;
+        translateY = currentY - startY;
+
+        drawGraph();
+    }
+});
+
+canvas.addEventListener("mouseup", () => {
+    isDragging = false;
+});
+
+canvas.addEventListener("mouseleave", () => {
+    isDragging = false;
 });
 
 // "Show Sorted Collaborators" butonu için olay dinleyici
