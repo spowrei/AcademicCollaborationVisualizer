@@ -21,7 +21,8 @@ def read_excel_and_parse(file_path):
         
         article_authors = []
         for author in co_authors:
-            author = author.strip()  # Gereksiz boşlukları kaldır
+            # Gereksiz boşlukları ve istenmeyen karakterleri kaldır
+            author = author.strip().strip('[]')
             
             # Eğer yazar ID'si henüz atanmamışsa yeni bir ID ata
             if author not in author_id_map:

@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS  # CORS'ı import edin
 from graph import Graph, dijkstra
 from data_processing import read_excel_and_parse
+import random
 
 # Flask uygulamasını başlat
 app = Flask(__name__)
@@ -70,16 +71,22 @@ def get_graph():
     Tüm graf verilerini döndürür.
     """
     nodes = [
-    {"id": node_id, "label": next((name for name, id in author_id_map.items() if id == node_id), f"Author {node_id}"), 
-     "x": index * 100 + 50, 
-     "y": index * 100 + 50}
-    for index, node_id in enumerate(graph.get_nodes())
+    {
+        "id": node_id,
+        "label": next((name for name, id in author_id_map.items() if id == node_id), f"Author {node_id}"),
+        "x": random.randint(50, 5000),  # Rastgele X pozisyonu (örnek aralık)
+        "y": random.randint(50, 5000)   # Rastgele Y pozisyonu (örnek aralık)
+    }
+    for node_id in graph.get_nodes()
 ]
+
     edges = [
-        {"from": edge[0], "to": edge[1], "weight": edge[2]}
-        for edge in graph.get_edges()
-    ]
+	    {"from": edge[0], "to": edge[1], "weight": edge[2]}
+	    for edge in graph.get_edges()
+	]
+
     return jsonify({"nodes": nodes, "edges": edges}), 200
+
 
 
 if __name__ == '__main__':
